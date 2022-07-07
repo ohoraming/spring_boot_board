@@ -35,4 +35,10 @@ public class BoardController {
                 //"list"라는 이름으로 boardService.boardList()를 담아 보냄
         return "boardlist";
     }
+
+    @GetMapping("/board/view") // localhost:8080/board/view?id=1
+    public String boardView(Model model, Integer id) {
+        model.addAttribute("board", boardService.boardView(id));
+        return "boardview";
+    }
 }
