@@ -17,21 +17,28 @@ public class BoardService {
     /**
      * 게시글 작성
      */
-    public void write(Board board) {
+    public void boardWrite(Board board) {
         boardRepository.save(board);
     }
 
     /**
      * 게시글 리스트
      */
-    public List<Board> boardList() {
+    public List<Board> list() {
         return boardRepository.findAll(); // findAll(): List<Board> 반환
     }
 
     /**
-     * 특정 게시글
+     * 특정 게시글 상세보기
      */
     public Board boardView(Integer id) {
         return boardRepository.findById(id).get();
+    }
+
+    /**
+     * 특정 게시글 삭제
+     */
+    public void boardDelete(Integer id) {
+        boardRepository.deleteById(id);
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 @Controller
 public class BoardController {
 
@@ -25,13 +27,13 @@ public class BoardController {
         System.out.println("title" + board.getTitle());
         System.out.println("content" + board.getContent());
 
-        boardService.write(board); // db에 저장
+        boardService.boardWrite(board); // db에 저장
         return "";
     }
 
     @GetMapping("/board/list")
     public String boardList(Model model) {
-        model.addAttribute("list", boardService.boardList());
+        model.addAttribute("list", boardService.list());
                 //"list"라는 이름으로 boardService.boardList()를 담아 보냄
         return "boardlist";
     }
@@ -40,5 +42,11 @@ public class BoardController {
     public String boardView(Model model, Integer id) {
         model.addAttribute("board", boardService.boardView(id));
         return "boardview";
+    }
+
+    @GetMapping("/board/delete")
+    public String boardDelete(Integer id) {
+        boardService.boardDelete(id);
+        return "redirect:/board/list";
     }
 }
