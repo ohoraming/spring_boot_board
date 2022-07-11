@@ -23,13 +23,18 @@ public class BoardController {
     }
 
     @PostMapping("/board/writepro")
-    public String boardwritePro(Board board) {
+    public String boardwritePro(Board board, Model model) {
 //        String title, String content로 일일이 전송받지 않고 Board자체를 @Entity를 이용해 받음
         System.out.println("title" + board.getTitle());
         System.out.println("content" + board.getContent());
 
         boardService.boardWrite(board); // db에 저장
-        return "redirect:/board/list";
+
+//        글 작성이 완료되면 alert을 띄워준 뒤, /board/list로 옮겨줌
+        model.addAttribute("message", "글 작성이 완료되었습니다.");
+        model.addAttribute("searchUrl", "/board/list");
+
+        return "message";
     }
 
     @GetMapping("/board/list")
@@ -61,13 +66,17 @@ public class BoardController {
     }
 
     @PostMapping("/board/update/{id}")
-    public String boardUpdate(@PathVariable("id") Integer id, Board board) {
+    public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model) {
         Board boardTemp = boardService.boardView(id); // 기존 글 검색하기
         boardTemp.setTitle(board.getTitle());
         boardTemp.setContent(board.getContent());
 
         boardService.boardWrite(boardTemp);
 
-        return "redirect:/board/list";
+//        글 수정이 완료되면 alert을 띄워준 뒤, /board/list로 옮겨줌
+        model.addAttribute("message", "수정이 완료되었습니다!");
+        model.addAttribute("searchUrl", "/board/list");
+
+        return "message";
     }
 }
