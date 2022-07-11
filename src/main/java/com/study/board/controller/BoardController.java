@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -28,7 +29,7 @@ public class BoardController {
         System.out.println("content" + board.getContent());
 
         boardService.boardWrite(board); // db에 저장
-        return "";
+        return "redirect:/board/list";
     }
 
     @GetMapping("/board/list")
@@ -47,6 +48,26 @@ public class BoardController {
     @GetMapping("/board/delete")
     public String boardDelete(Integer id) {
         boardService.boardDelete(id);
+        return "redirect:/board/list";
+    }
+
+    @GetMapping("/board/modify/{id}")
+//    {id}가 @PathVariable("id")로 인식되어 Integer id 형태로 들어감
+    public String boardModify(@PathVariable("id") Integer id,
+                              Model model) {
+        model.addAttribute("board", boardService.boardView(id)); // 해당 글 넘겨주기
+
+        return "boardmodify";
+    }
+
+    @PostMapping("/board/update/{id}")
+    public String boardUpdate(@PathVariable("id") Integer id, Board board) {
+        Board boardTemp = boardService.boardView(id); // 기존 글 검색하기
+        boardTemp.setTitle(board.getTitle());
+        boardTemp.setContent(board.getContent());
+
+        boardService.boardWrite(boardTemp);
+
         return "redirect:/board/list";
     }
 }

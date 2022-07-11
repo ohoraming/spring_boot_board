@@ -7,15 +7,7 @@ public class Board {
 //    해당 class는 db의 table를 의미
 
     @Id
-    @SequenceGenerator(
-            name = "board_sequence",
-            sequenceName = "board_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "board_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
     private String content;
