@@ -71,6 +71,8 @@ public class BoardController {
         Board boardTemp = boardService.boardView(id); // 기존 글 검색하기
         boardTemp.setTitle(board.getTitle());
         boardTemp.setContent(board.getContent());
+        boardTemp.setFilename(board.getFilename());
+        boardTemp.setFilepath(board.getFilepath());
 
         boardService.boardWrite(boardTemp, file);
 
