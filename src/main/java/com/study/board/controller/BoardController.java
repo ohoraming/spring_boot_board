@@ -3,6 +3,9 @@ package com.study.board.controller;
 import com.study.board.entity.Board;
 import com.study.board.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,8 +42,10 @@ public class BoardController {
     }
 
     @GetMapping("/board/list")
-    public String boardList(Model model) {
-        model.addAttribute("list", boardService.list());
+    public String boardList(Model model, @PageableDefault(page = 1, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+//       @PageableDefault를 사용하면, /board/list?page=0&size=20 과 같이 query를 넘겨주어서 paging 처리를 할 수도 있음
+//        page = 기준 페이지(첫 페이지 = 0), size = 한 페이지당 게시글의 수, sort = 정렬 기준, direction = 정렬 순서
+        model.addAttribute("list", boardService.list(pageable));
                 //"list"라는 이름으로 boardService.boardList()를 담아 보냄
         return "boardlist";
     }
