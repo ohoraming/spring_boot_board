@@ -3,6 +3,7 @@ package com.study.board.controller;
 import com.study.board.entity.Board;
 import com.study.board.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -42,11 +43,20 @@ public class BoardController {
     }
 
     @GetMapping("/board/list")
-    public String boardList(Model model, @PageableDefault(page = 1, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String boardList(Model model, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 //       @PageableDefault를 사용하면, /board/list?page=0&size=20 과 같이 query를 넘겨주어서 paging 처리를 할 수도 있음
 //        page = 기준 페이지(첫 페이지 = 0), size = 한 페이지당 게시글의 수, sort = 정렬 기준, direction = 정렬 순서
-        model.addAttribute("list", boardService.list(pageable));
-                //"list"라는 이름으로 boardService.boardList()를 담아 보냄
+
+        Page<Board> list = boardService.list(pageable);
+
+        int nowPage = list.getPageable().getPageNumber() + 1; // 현재 페이지
+        int startPage = Math.max(nowPage - 4, 1); // 페이지 블럭 시작 페이지
+        int endPage = Math.min(nowPage + 5, list.getTotalPages()); // 페이지 블럭 마지막 페이지
+
+        model.addAttribute("list", list); //"list"라는 이름으로 boardService.boardList()를 담아 보냄
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         return "boardlist";
     }
 
