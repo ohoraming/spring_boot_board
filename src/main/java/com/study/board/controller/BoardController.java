@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
 
@@ -23,12 +24,12 @@ public class BoardController {
     }
 
     @PostMapping("/board/writepro")
-    public String boardwritePro(Board board, Model model) {
+    public String boardwritePro(Board board, Model model, MultipartFile file) throws Exception {
 //        String title, String content로 일일이 전송받지 않고 Board자체를 @Entity를 이용해 받음
-        System.out.println("title" + board.getTitle());
-        System.out.println("content" + board.getContent());
+        System.out.println("title: " + board.getTitle());
+        System.out.println("content: " + board.getContent());
 
-        boardService.boardWrite(board); // db에 저장
+        boardService.boardWrite(board, file); // db에 저장
 
 //        글 작성이 완료되면 alert을 띄워준 뒤, /board/list로 옮겨줌
         model.addAttribute("message", "글 작성이 완료되었습니다.");
@@ -66,12 +67,12 @@ public class BoardController {
     }
 
     @PostMapping("/board/update/{id}")
-    public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model) {
+    public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model, MultipartFile file) throws Exception {
         Board boardTemp = boardService.boardView(id); // 기존 글 검색하기
         boardTemp.setTitle(board.getTitle());
         boardTemp.setContent(board.getContent());
 
-        boardService.boardWrite(boardTemp);
+        boardService.boardWrite(boardTemp, file);
 
 //        글 수정이 완료되면 alert을 띄워준 뒤, /board/list로 옮겨줌
         model.addAttribute("message", "수정이 완료되었습니다!");
