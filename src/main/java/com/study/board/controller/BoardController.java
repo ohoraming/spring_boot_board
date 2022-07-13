@@ -43,11 +43,21 @@ public class BoardController {
     }
 
     @GetMapping("/board/list")
-    public String boardList(Model model, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-//       @PageableDefault를 사용하면, /board/list?page=0&size=20 과 같이 query를 넘겨주어서 paging 처리를 할 수도 있음
+    public String boardList(Model model,
+                            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                            String searchKeyword) {
+//       @PageableDefault를 사용하면,
+//       localhost:8080/board/list?page=0&size=20 과 같이 ?다음의 query로 page 정보(page=0&size=20)를 넘겨 paging 처리를 할 수 있음
 //        page = 기준 페이지(첫 페이지 = 0), size = 한 페이지당 게시글의 수, sort = 정렬 기준, direction = 정렬 순서
 
-        Page<Board> list = boardService.list(pageable);
+        Page<Board> list = null;
+
+//        localhost:8080/board/list?searchKeyword=blahblah&page=0 으로 검색
+        if(searchKeyword == null) {
+            list = boardService.list(pageable);
+        } else {
+            list = boardService.boardSearchList(searchKeyword, pageable);
+        }
 
         int nowPage = list.getPageable().getPageNumber() + 1; // 현재 페이지
         int startPage = Math.max(nowPage - 4, 1); // 페이지 블럭 시작 페이지
@@ -57,6 +67,7 @@ public class BoardController {
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+
         return "boardlist";
     }
 

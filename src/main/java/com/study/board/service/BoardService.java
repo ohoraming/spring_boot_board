@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -39,6 +38,14 @@ public class BoardService {
     public Page<Board> list(Pageable pageable) {
         return boardRepository.findAll(pageable); // findAll(): List<Board> 반환
     }
+
+    /**
+     * 게시글 검색
+     */
+    public Page<Board> boardSearchList(String searchKeyword, Pageable pageable) {
+        return boardRepository.findByTitleContaining(searchKeyword, pageable);
+    }
+
 
     /**
      * 특정 게시글 상세보기
